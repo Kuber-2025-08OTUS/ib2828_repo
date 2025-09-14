@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+  labels:
+    app: web
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+        - name: web
+          image: python:3
+          command: ['python3', '-m', 'http.server', '8000']
+          workingDir: /homework
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            exec:
+              command:
+                - cat
+                - /homework/index.html
+          volumeMounts:
+            - name: content
+              mountPath: '/homework'
+          lifecycle:
+            preStop:
+              exec:
+                command: ['/usr/bin/rm', '/homework/index.html']
+
+      initContainers:
+        - name: init-container
+          image: busybox:1.28
+          command:
+            - 'wget'
+            - '-O'
+            - '/init/index.html'
+            - 'http://info.cern.ch'
+          volumeMounts:
+            - name: content
+              mountPath: '/init'
+      volumes:
+        - name: content
+          emptyDir: {}
