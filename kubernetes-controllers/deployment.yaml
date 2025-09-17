@@ -19,6 +19,8 @@ spec:
       labels:
         app: web-app
     spec:
+      nodeSelector:
+        homework: 'true'
       containers:
         - name: web
           image: python:3
