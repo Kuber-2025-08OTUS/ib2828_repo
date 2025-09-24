@@ -28,11 +28,10 @@ spec:
           workingDir: /homework
           ports:
             - containerPort: 8000
-          readinessProbe:
-            exec:
-              command:
-                - cat
-                - /homework/index.html
+          livenessProbe:
+            httpGet:
+              path: /index.html
+              port: 8000
           volumeMounts:
             - name: content
               mountPath: '/homework'
