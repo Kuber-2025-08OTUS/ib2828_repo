@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: web-deployment
+  namespace: homework
   labels:
     app: web
 spec:
@@ -19,8 +20,6 @@ spec:
       labels:
         app: web-app
     spec:
-      nodeSelector:
-        homework: 'true'
       containers:
         - name: web
           image: python:3
